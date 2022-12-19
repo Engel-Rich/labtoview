@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="lab2view.test">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="Lab2viewTest"
         android:name="${applicationName}"

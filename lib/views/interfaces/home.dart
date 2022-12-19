@@ -13,7 +13,6 @@ import 'package:test/views/composants/drawer.dart';
 import 'package:test/views/composants/smallComponen.dart';
 
 import '../composants/listprofile.dart';
-import '../composants/tabarbuilder.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,7 +21,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   int curentI = 0;
   final pages = [
     const Center(
@@ -68,11 +68,38 @@ class _HomePageState extends State<HomePage> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool? isDrakMode;
+  TextStyle? styleobj;
+  TabController? controller;
+
+  setStyle() {
+    setState(() {
+      styleobj = !Get.isDarkMode
+          ? police.copyWith(
+              color: Colors.grey.shade900,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.0)
+          : police.copyWith(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.0);
+    });
+  }
+
   @override
   void initState() {
     isDrakMode = Get.isDarkMode;
+    setStyle();
+    controller = TabController(length: 5, vsync: this);
     debugPrint(isDrakMode.toString());
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller!.dispose();
+    super.dispose();
   }
 
   @override
@@ -144,6 +171,7 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 isDrakMode = Get.isDarkMode;
               });
+              setStyle();
               print(isDrakMode);
             },
             icon: FaIcon(
@@ -189,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                   height: 70,
                   width: double.infinity,
                   padding: const EdgeInsets.only(bottom: 20),
-                  child: const TabbarBuilder(),
+                  child: TabbarBuilder(),
                 ),
                 Obx(
                   () => Container(
@@ -218,7 +246,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 spacer(12),
-                Text('Les Plus polulaires', style: title2),
+                Text('Les Plus polulaires',
+                    style: title2.copyWith(
+                        color:
+                            isDrakMode! ? Colors.white : Colors.grey.shade900)),
                 spacer(12),
                 Obx(
                   () => controller.movieList.isNotEmpty
@@ -249,50 +280,73 @@ class _HomePageState extends State<HomePage> {
             )
           : pages[curentI],
       drawer: const DrawerBuil(),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: curentI,
-        type: BottomNavigationBarType.fixed,
-        onTap: (val) {
-          setState(() {
-            curentI = val;
-          });
-        },
-        selectedLabelStyle: police.copyWith(color: Colors.grey),
-        unselectedLabelStyle: police.copyWith(color: Colors.grey),
-        showSelectedLabels: true,
-        showUnselectedLabels: false,
-        backgroundColor: isDrakMode! ? Colors.grey.shade900 : Colors.white,
-        elevation: 0.0,
-        selectedItemColor: indigo,
-        unselectedItemColor: Colors.grey,
-        items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(
-              Icons.search,
+      bottomNavigationBar: isDrakMode == null
+          ? null
+          : BottomNavigationBar(
+              currentIndex: curentI,
+              type: BottomNavigationBarType.fixed,
+              onTap: (val) {
+                setState(() {
+                  curentI = val;
+                });
+              },
+              selectedLabelStyle: police.copyWith(color: Colors.grey),
+              unselectedLabelStyle: police.copyWith(color: Colors.grey),
+              showSelectedLabels: true,
+              showUnselectedLabels: false,
+              backgroundColor:
+                  !isDrakMode! ? Colors.white : Colors.grey.shade900,
+              elevation: 0.0,
+              selectedItemColor: indigo,
+              unselectedItemColor: Colors.grey,
+              items: [
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: "Home",
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.search,
+                  ),
+                  label: "Explore",
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.trending_up),
+                  label: "Trending",
+                ),
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.push_pin),
+                  label: "save",
+                ),
+                BottomNavigationBarItem(
+                  icon: CircleAvatar(
+                    backgroundColor: fondColors,
+                    backgroundImage: const AssetImage("assets/profile1.jpg"),
+                  ),
+                  label: "profile",
+                ),
+              ],
             ),
-            label: "Explore",
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.trending_up),
-            label: "Trending",
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.push_pin),
-            label: "save",
-          ),
-          BottomNavigationBarItem(
-            icon: CircleAvatar(
-              backgroundColor: fondColors,
-              backgroundImage: const AssetImage("assets/profile1.jpg"),
-            ),
-            label: "profile",
-          ),
-        ],
-      ),
+    );
+  }
+
+  Widget TabbarBuilder() {
+    return TabBar(
+      controller: controller,
+      indicatorColor: indigo,
+      automaticIndicatorColorAdjustment: true,
+      padding: const EdgeInsets.all(3),
+      labelPadding: const EdgeInsets.all(8),
+      unselectedLabelStyle: styleobj,
+      physics: const BouncingScrollPhysics(),
+      isScrollable: true,
+      tabs: [
+        Text("Traidings", style: styleobj),
+        Text("My topic ", style: styleobj),
+        Text("Local news", style: styleobj),
+        Text("Fact check", style: styleobj),
+        Text("Good news", style: styleobj),
+      ],
     );
   }
 }
