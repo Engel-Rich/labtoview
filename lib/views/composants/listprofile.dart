@@ -7,24 +7,24 @@ class ListProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ListView.separated(
       scrollDirection: Axis.horizontal,
+      shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
       itemCount: 10,
       itemBuilder: (context, index) =>
           profileBuildert('assets/profile$index.jpg'),
+      separatorBuilder: (context, index) => const SizedBox(width: 12),
     );
   }
 }
 
 Widget profileBuildert(String image) => CircleAvatar(
-      backgroundColor: fondColors,
-      child: ClipOval(
-        child: Image.asset(
-          image,
-          width: double.infinity,
-          height: double.infinity,
-          fit: BoxFit.cover,
-        ),
+      radius: 28,
+      foregroundColor: indigo.shade900,
+      child: CircleAvatar(
+        backgroundColor: fondColors,
+        radius: 26,
+        backgroundImage: AssetImage(image),
       ),
     );

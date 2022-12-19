@@ -15,27 +15,32 @@ class SmallComponen extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          height: 170,
-          width: MediaQuery.of(context).size.width * 0.4,
+          height: 220,
+          // width: MediaQuery.of(context).size.width * 0.4,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             image: DecorationImage(
               image: CachedNetworkImageProvider(imageUrl(movies.image),
-                  cacheKey: movies.id),
+                  cacheKey: movies.id.toString()),
               fit: BoxFit.cover,
             ),
           ),
         ),
         Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-          height: 270,
+          height: 220,
+          width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.4),
+            gradient: LinearGradient(colors: [
+              Colors.black.withOpacity(0.3),
+              Colors.black.withOpacity(0.6),
+              Colors.black.withOpacity(0.8),
+            ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
             borderRadius: BorderRadius.circular(15),
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Expanded(child: SizedBox()),
               Text(movies.title,
                   style: title2.copyWith(
                     color: Colors.white,
@@ -43,51 +48,40 @@ class SmallComponen extends StatelessWidget {
                     letterSpacing: 0,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 2),
-              spacer(8),
+                  maxLines: 3),
+              const Expanded(child: SizedBox()),
               Text(
-                movies.description ?? "Genre : ${movies.genre}",
+                "Genre : ${movies.genre}",
                 style: appBarpolice.copyWith(
-                  letterSpacing: 4,
-                  fontWeight: FontWeight.w700,
-                ),
+                    letterSpacing: 0.0,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                    color: blanclaire),
                 overflow: TextOverflow.ellipsis,
               ),
-              spacer(15),
-              ListTile(
-                leading: const CircleAvatar(
-                  backgroundColor: indigo,
-                  child: Center(
-                    child: Icon(Icons.thumb_up, color: Colors.white),
-                  ),
-                ),
-                // title: Text(movies.genre, style: title2),
-                title: Text(
-                    movies.voteCount < 1000
-                        ? movies.voteCount.toString()
-                        : "${(movies.voteCount).toStringAsFixed(2)}K",
-                    style: title2.copyWith(
-                        fontWeight: FontWeight.normal, color: blanclaire)),
-              ),
               spacer(10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Text(
-                  //   movies.countryName,
-                  //   style: title1.copyWith(fontSize: 12, color: blanclaire),
-                  // ),
-                  Text(
-                    movies.dateSortie,
-                    style: title1.copyWith(fontSize: 12, color: blanclaire),
-                  ),
-                  Text(
-                    movies.popularity < 1000
-                        ? movies.popularity.toString()
-                        : "${(movies.popularity).toStringAsFixed(2)}K",
-                    style: title1.copyWith(fontSize: 12, color: blanclaire),
-                  ),
-                ],
+              // Wrap(
+              //   children: [
+              //     const Icon(Icons.thumb_up, color: Colors.white),
+              //     const SizedBox(width: 15),
+              //     Text(
+              //         movies.voteCount < 1000
+              //             ? movies.voteCount.toString()
+              //             : "${(movies.voteCount).toStringAsFixed(2)}K",
+              //         style: title2.copyWith(
+              //             fontWeight: FontWeight.normal,
+              //             color: blanclaire,
+              //             fontSize: 12))
+              //   ],
+              // ),
+              spacer(8),
+              Text(
+                movies.countryName,
+                style: title1.copyWith(fontSize: 10, color: blanclaire),
+              ),
+              Text(
+                movies.dateSortie,
+                style: title1.copyWith(fontSize: 10, color: blanclaire),
               )
             ],
           ),

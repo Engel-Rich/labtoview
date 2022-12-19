@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 
-class ThemeController extends GetxController {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+class ThemeController {
+  final _box = GetStorage();
+  final _key = 'isLight';
 
-  RxBool isLightTheme = false.obs;
+  ThemeMode get theme => _loadThemeFromBox() ? ThemeMode.dark : ThemeMode.light;
 
-  saveThemeStatus() async {
-    SharedPreferences pref = await _prefs;
-    pref.setBool('theme', isLightTheme.value);
-  }
+  bool _loadThemeFromBox() => _box.read(_key) ?? false;
 
-  getThemeStatus() async {
-    var isLight = _prefs.then((SharedPreferences prefs) {
-      return prefs.getBool('theme') ?? true;
-    }).obs;
-    isLightTheme.value = (await isLight.value);
-    Get.changeThemeMode(isLightTheme.value ? ThemeMode.light : ThemeMode.dark);
+  _saveThemeToBox(bool isDarkMode) => _box.write(_key, isDarkMode);
+
+  void switchTheme() {
+    Get.changeThemeMode(_loadThemeFromBox() ? ThemeMode.light : ThemeMode.dark);
+    _saveThemeToBox(!_loadThemeFromBox());
   }
 }
